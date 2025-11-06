@@ -125,7 +125,7 @@ describe("Day 6 Assignment - Dynamic Content & Lists", () => {
           });
       });
   });
-  // Test 7: Handling Slow Loading
+  // Test 7: Handling Slow Loading ✅
   it("should handle page load and verify all elements", () => {
     // 1. Visit homepage
     cy.visit("/");
@@ -154,21 +154,22 @@ describe("Day 6 Assignment - Dynamic Content & Lists", () => {
     // 1. Visit products page
     cy.visit("/products");
     // 2. Create empty array
-    let emptyArray;
+    let brands = [];
     // 3. Iterate through all brands in sidebar
-    cy.get(".brands-name").each(($el) => {
-      cy.wrap($el).click();
-      // 4. Extract each brand name and add to array
-      emptyArray.push(cy.contains("Polo"));
-      emptyArray.push(cy.contains("H&M"));
-      emptyArray.push(cy.contains("Madame"));
-      emptyArray.push(cy.contains("Mast & Harbour"));
-      emptyArray.push(cy.contains("Babyhug"));
-      emptyArray.push(cy.contains("Allen Solly Junior"));
-      emptyArray.push(cy.contains("Kookie Kids"));
-      emptyArray.push(cy.contains("Biba"));
-    });
-    // 5. Log the complete array
-    // 6. Verify array has more than 5 brands
+    cy.get(".brands-name ul li a")
+      .each(($el) => {
+        // 4. Extract each brand name and add to array
+        const text = $el
+          .text()
+          .trim()
+          .replace(/\(\d+\)\s*/, "");
+        if (text) brands.push(text);
+      })
+      .then(() => {
+        // 5. Log the complete array
+        cy.log("Brands found: " + brands.join(", "));
+        // 6. Verify array has more than 5 brands
+        expect(brands).to.have.length.greaterThan(5);
+      });
   });
 });
